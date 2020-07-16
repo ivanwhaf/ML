@@ -3,74 +3,99 @@ import random
 import numpy as np
 import pandas as pd
 
-data_path='F:\project\python\ML\knn\iris.data'
-k=20
 
-def load_data(data_path):
-    data=pd.read_table(data_path,sep=',',header=None)
-    # convert dataframe to python list
-    data=np.array(data).tolist()
-    # shuffle the data list
-    random.shuffle(data)
+class KNN():
+    def __init__(self):
+        self.k = 20
+        self.dataset = None
+        self.label = None
 
-    train_data=data[:100]
-    test_data=data[100:150]
-    print('train_data:')
-    print(train_data)
-    print('test_data:')
-    print(test_data)
-    return train_data,test_data
+    def load_dataset(self, path):
+        # load dataset from file
+        dataset, label = [], []
+        f = open(path)
+        for line in f.readlines():
+            d = line.strip().split(',')
+            dataset.append(d)
 
+        random.shuffle(dataset)
+        for i in range(len(dataset)):
+            label.append(dataset[i][-1])
+            dataset[i] = (list(map(float, dataset[i][:-1])))
 
-def get_nearest_neighbors(train_data,test):
-    neighbors=[]
-    for train in train_data:
-        # calculate distance
-        sq_diff=(train[0]-test[0])**2+(train[1]-test[1])**2+(train[2]-test[2])**2+(train[3]-test[3])**2
-        distance=math.sqrt(sq_diff)
-        neighbors.append((distance,train[-1])) #  last col of 'train' is lable
+        '''
+        data=pd.read_table(data_path,sep=',',header=None)
+        # convert dataframe to python list
+        data=np.array(data).tolist()
+        # shuffle the data list
+        random.shuffle(data)
+        '''
 
-    neighbors.sort(key=lambda x: x[0]) # sort neighbors list
+        print('dataset:', dataset)
+        print('label:', label)
+        self.dataset, self.label = dataset, label
+        return dataset, label
 
-    k_nearest_neighbors=neighbors[:k] # select top 'k' nearest neighbors
-    return k_nearest_neighbors
+    def _get_k_nearest_neighbors(self, train_data, train_label, test):
+        # get top k nearest neighbors' list
+        neighbors = []
+        for i in range(len(train_data)):
+            # calculate distance
+            sq_diff = 0
+            for n in range(len(train_data[i])):
+                sq_diff += (train_data[i][n]-test[n])**2
+            distance = math.sqrt(sq_diff)
 
-def get_predict(k_nearest_neighbors):
-    dic={}
-    for neighbor in k_nearest_neighbors:
-        if neighbor[1] in dic:
-            dic[neighbor[1]]+=1
-        else:
-            dic[neighbor[1]]=1
-    
-    lst=sorted(dic.items(),key=lambda x: x[1],reverse=True) # sort by num
-    print(lst)
-    return lst[0][0]
+            neighbors.append((distance, train_label[i]))
 
+        neighbors.sort(key=lambda x: x[0])  # sort neighbors list by distance
 
-def classify(train_data,test_data):
-    pre_lable=[]
+        # select top 'k' nearest neighbors
+        k_nearest_neighbors = neighbors[:self.k]
+        return k_nearest_neighbors
 
-    for test in test_data:
-        k_nearest_neighbors=get_nearest_neighbors(train_data,test)
-        pre=get_predict(k_nearest_neighbors)
-        pre_lable.append(pre)
-    return pre_lable
+    def _get_highest_proportio_neighbor(self, k_nearest_neighbors):
+        # sort k nearest neighbors and choose highest proportio neighbor as prediction
+        dic = {}
+        for neighbor in k_nearest_neighbors:
+            if neighbor[1] in dic:
+                dic[neighbor[1]] += 1
+            else:
+                dic[neighbor[1]] = 1
+        # sort by num
+        lst = sorted(dic.items(), key=lambda x: x[1], reverse=True)
+
+        return lst[0][0]
+
+    def predict(self, train_data, train_label, test_data, test_label):
+        pre_lable = []
+
+        for test in test_data:
+            k_nearest_neighbors = self._get_k_nearest_neighbors(
+                train_data, train_label, test)
+            pre = self._get_highest_proportio_neighbor(k_nearest_neighbors)
+            pre_lable.append(pre)
+        return pre_lable
+
+    def evaluate(self, train_data, train_label, test_data, test_label):
+        pre_label = self.predict(
+            train_data, train_label, test_data, test_label)
+        wrong = 0
+        for i in range(len(test_label)):
+            if test_label[i] != pre_label[i]:
+                wrong += 1
+        accuracy = (1-wrong/len(test_data))*100
+        print('Accuracy is %.1f%%' % accuracy)
 
 
 def main():
-    train_data,test_data=load_data(data_path)
-    pre_lable=classify(train_data,test_data)
-    print(pre_lable)
-    wrong=0
-    for i in range(len(test_data)):
-        if test_data[i][4]!=pre_lable[i]:
-            wrong+=1
-    print(wrong)
+    knn = KNN()
+    dataset, label = knn.load_dataset('F:\project\python\ML\knn\iris.data')
+    train_data, test_data = dataset[:100], dataset[100:]
+    train_label, test_label = label[:100], label[100:]
+    # pre_label = knn.predict(train_data, train_label, test_data, test_label)
+    knn.evaluate(train_data, train_label, test_data, test_label)
 
 
 if __name__ == "__main__":
     main()
-
-
-    

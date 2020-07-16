@@ -2,7 +2,10 @@ import copy
 import operator
 from math import log
 
-
+class DecisionTree():
+    def __init__(self):
+        pass
+    
 def calc_shannon_ent(dataset: list):
     """
     calculate the shannon entropy of a dataset
