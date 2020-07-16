@@ -4,6 +4,8 @@ some machine learning algorithms
 ## decision tree
 ## naive bayes
 ## logistic regression
+## linear regression
+## neural network
 ## svm
 ## ada boost
 ## k-means
