@@ -264,10 +264,10 @@ class NeuralNetwork:
                 self.h5.weights[2] -= lr*dL_dy2*dy2_dh5*dh5_dw3
                 self.h5.bias -= lr*dL_dy2*dy2_dh5*dh5_db
 
-            if epoch % 10 == 0:
+            if (epoch+1) % 10 == 0:
                 y_preds = np.apply_along_axis(self.feedforward, 1, x_train)
                 loss = mse_loss(y_train, y_preds)
-                print("Epoch %d loss: %.3f" % (epoch, loss))
+                print("Epoch: %d,loss: %.3f" % (epoch+1, loss))
 
 
 def main():
