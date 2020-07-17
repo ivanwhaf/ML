@@ -5,8 +5,8 @@ import pandas as pd
 
 
 class KNN():
-    def __init__(self):
-        self.k = 20
+    def __init__(self, k=20):
+        self.k = k
         self.dataset = None
         self.label = None
 
@@ -89,7 +89,7 @@ class KNN():
 
 
 def main():
-    knn = KNN()
+    knn = KNN(k=20)
     dataset, label = knn.load_dataset('F:\project\python\ML\knn\iris.data')
     train_data, test_data = dataset[:100], dataset[100:]
     train_label, test_label = label[:100], label[100:]
