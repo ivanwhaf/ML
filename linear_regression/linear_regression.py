@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-class LinearRegression():
+class LinearRegression:
     def __init__(self):
         self.weights = None
         self.dataset = None

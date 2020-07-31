@@ -2,10 +2,12 @@ import copy
 import operator
 from math import log
 
-class DecisionTree():
+
+class DecisionTree:
     def __init__(self):
         pass
-    
+
+
 def calc_shannon_ent(dataset: list):
     """
     calculate the shannon entropy of a dataset
@@ -23,9 +25,9 @@ def calc_shannon_ent(dataset: list):
     shannon_ent = 0.0
 
     for label in label_counts:
-        prob = float(label_counts[label])/num
+        prob = float(label_counts[label]) / num
         # l(xi)=-log2p(xi)
-        shannon_ent -= prob*log(prob, 2)
+        shannon_ent -= prob * log(prob, 2)
 
     return shannon_ent
 
@@ -35,7 +37,7 @@ def split_dataset(dataset: list, axis, value):
     for data in dataset:
         if data[axis] == value:
             new_data = data[:axis]
-            new_data.extend(data[axis+1:])
+            new_data.extend(data[axis + 1:])
             ret_dataset.append(new_data)
     return ret_dataset
 
@@ -44,7 +46,7 @@ def choose_best_feature_to_split(dataset: list) -> int:
     """
     return best feature's index
     """
-    num_features = len(dataset[0])-1
+    num_features = len(dataset[0]) - 1
 
     base_entropy = calc_shannon_ent(dataset)
     best_info_gain, best_feature = 0.0, -1
@@ -57,11 +59,11 @@ def choose_best_feature_to_split(dataset: list) -> int:
 
         for value in unique_values:
             sub_dataset = split_dataset(dataset, i, value)
-            prob = len(sub_dataset)/float(len(dataset))
-            new_entropy += prob*calc_shannon_ent(sub_dataset)
+            prob = len(sub_dataset) / float(len(dataset))
+            new_entropy += prob * calc_shannon_ent(sub_dataset)
 
         # info gain is entropy's decrease or decrease of data disorder
-        info_gain = base_entropy-new_entropy
+        info_gain = base_entropy - new_entropy
 
         if info_gain > best_info_gain:
             best_info_gain = info_gain
@@ -101,7 +103,7 @@ def create_decision_tree(dataset: list, feature_labels: list, feature_value=None
 
     # all the classes are same
     if class_lst.count(class_lst[0]) == len(class_lst):
-        #print('leaf node')
+        # print('leaf node')
         return TreeNode(class_label=class_lst[0])
 
     # have traversed all features
@@ -110,12 +112,12 @@ def create_decision_tree(dataset: list, feature_labels: list, feature_value=None
 
     best_feature_index = choose_best_feature_to_split(dataset)
     best_feature_label = feature_labels[best_feature_index]
-    #print('best feature label:'+best_feature_label)
+    # print('best feature label:'+best_feature_label)
 
     tree = TreeNode(child={}, feature_index=best_feature_index,
                     feature_label=best_feature_label)
 
-    del(feature_labels[best_feature_index])
+    del (feature_labels[best_feature_index])
 
     feature_lst = [data[best_feature_index] for data in dataset]
     unique_values = set(feature_lst)
@@ -136,10 +138,10 @@ def classify(tree: TreeNode, feature_labels, pre_data):
         child_tree = tree.child[feature]
 
         # print(tree.feature_index)
-        del(feature_labels[tree.feature_index])
+        del (feature_labels[tree.feature_index])
 
         reduced_pre_data = pre_data[:tree.feature_index]
-        reduced_pre_data.extend(pre_data[tree.feature_index+1:])
+        reduced_pre_data.extend(pre_data[tree.feature_index + 1:])
         pre_data = reduced_pre_data
         # print(pre_data)
 

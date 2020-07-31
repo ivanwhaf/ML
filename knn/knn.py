@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 
-class KNN():
+class KNN:
     def __init__(self, k=20):
         self.k = k
         self.dataset = None
@@ -25,7 +25,7 @@ class KNN():
 
         '''
         data=pd.read_table(data_path,sep=',',header=None)
-        # convert dataframe to python list
+        # convert pandas dataframe to python list
         data=np.array(data).tolist()
         # shuffle the data list
         random.shuffle(data)
@@ -43,7 +43,7 @@ class KNN():
             # calculate distance
             sq_diff = 0
             for n in range(len(train_data[i])):
-                sq_diff += (train_data[i][n]-test[n])**2
+                sq_diff += (train_data[i][n] - test[n]) ** 2
             distance = math.sqrt(sq_diff)
 
             neighbors.append((distance, train_label[i]))
@@ -54,8 +54,8 @@ class KNN():
         k_nearest_neighbors = neighbors[:self.k]
         return k_nearest_neighbors
 
-    def _get_highest_proportio_neighbor(self, k_nearest_neighbors):
-        # sort k nearest neighbors and choose highest proportio neighbor as prediction
+    def _get_highest_proportion_neighbor(self, k_nearest_neighbors):
+        # sort k nearest neighbors and choose highest proportion neighbor as prediction
         dic = {}
         for neighbor in k_nearest_neighbors:
             if neighbor[1] in dic:
@@ -73,7 +73,7 @@ class KNN():
         for test in test_data:
             k_nearest_neighbors = self._get_k_nearest_neighbors(
                 train_data, train_label, test)
-            pre = self._get_highest_proportio_neighbor(k_nearest_neighbors)
+            pre = self._get_highest_proportion_neighbor(k_nearest_neighbors)
             pre_lable.append(pre)
         return pre_lable
 
@@ -84,7 +84,7 @@ class KNN():
         for i in range(len(test_label)):
             if test_label[i] != pre_label[i]:
                 wrong += 1
-        accuracy = (1-wrong/len(test_data))*100
+        accuracy = (1 - wrong / len(test_data)) * 100
         print('Accuracy is %.1f%%' % accuracy)
 
 

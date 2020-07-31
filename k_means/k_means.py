@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-class KMeans():
+class KMeans:
     def __init__(self, k=5):
         self.k = k
 
@@ -24,7 +24,7 @@ class KMeans():
         return dataset
 
     def _calculate_dist(self, a, b):
-        return np.sqrt(np.sum(np.power(a-b, 2)))
+        return np.sqrt(np.sum(np.power(a - b, 2)))
 
     def create_centroids(self, dataset):
         # num of features
@@ -35,9 +35,9 @@ class KMeans():
         for j in range(n):
             min_j = min(dataset[:, j])
             max_j = max(dataset[:, j])
-            range_j = float(max_j-min_j)
-            centroids[:, j] = min_j+range_j * \
-                np.random.rand(self.k, 1)  # here k*1 vector
+            range_j = float(max_j - min_j)
+            centroids[:, j] = min_j + range_j * \
+                              np.random.rand(self.k, 1)  # here k*1 vector
 
         self.centroids = centroids
         return centroids
@@ -50,15 +50,15 @@ class KMeans():
 
         # every train epoch
         for e in range(epochs):
-            print('Epoch:', e+1)
+            print('Epoch:', e + 1)
             # for every data in dataset
             for i in range(m):
-                cent_dist = []  # centroid index-disttance list
+                cent_dist = []  # centroid index-distance list
                 # for every centroid,calculate each centroid's distance to data
                 for j in range(self.k):
                     dist = self._calculate_dist(centroids[j, :], dataset[i, :])
                     cent_dist.append((j, dist))
-                # choose minium distance's centroid as data's cluster centroid
+                # choose minimum distance's centroid as data's cluster centroid
                 min_index, min_dist = min(cent_dist, key=lambda x: x[1])
 
                 if cluster_data[i, 0] != min_index:
@@ -85,7 +85,7 @@ class KMeans():
             # maybe data's class<k,so data could be 0
             if data:
                 plt.scatter(data[0], data[1], s=30, label='class' +
-                            str(j), c=color[j])
+                                                          str(j), c=color[j])
             plt.scatter(cendroids[j, 0], cendroids[j, 1],
                         s=30, c=color[j], marker='+')
 

@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 
 
 def sigmoid(x):
-    return 1.0/(1+np.exp(-x))
+    return 1.0 / (1 + np.exp(-x))
 
 
-class LogisticRegression():
+class LogisticRegression:
     def __init__(self):
         self.dataset = None
         self.label = None
@@ -17,7 +17,7 @@ class LogisticRegression():
     def load_dataset(self, path):
         # return arrays of dataset and relevant label
         # when traversal python set,order may be different
-        # so chooes list as unique_label's data structure
+        # so choose list as unique_label's data structure
         dataset, label, unique_label = [], [], []
 
         # load data from file
@@ -25,7 +25,7 @@ class LogisticRegression():
         for line in f.readlines():
             data = line.strip().split(',')
             # add 'x0=1.0' as first feature,because weight have const 'w0'
-            dataset.append([1.0]+data)
+            dataset.append([1.0] + data)
             if data[-1] not in unique_label:
                 unique_label.append(data[-1])
 
@@ -47,7 +47,7 @@ class LogisticRegression():
         return dataset, label
 
     def _gradient_descent(self, alpha, epoch):
-        # gradient desscent train function,return trained weights vector
+        # gradient descent train function,return trained weights vector
         dataset_mat = np.mat(self.dataset, dtype=float)  # must assign dtype!
         label_mat = np.mat(self.label).transpose()  # 1*m --> m*1
 
@@ -57,9 +57,9 @@ class LogisticRegression():
 
         for e in range(epoch):
             # numpy matrix's * operator equal to np.dot
-            h = sigmoid(dataset_mat*weights)
-            error = label_mat-h
-            weights = weights+alpha*dataset_mat.transpose()*error
+            h = sigmoid(dataset_mat * weights)
+            error = label_mat - h
+            weights = weights + alpha * dataset_mat.transpose() * error
 
         weights = np.array(weights)  # matrix convert back to ndarray!
         # shape convert back to 1*n (n,)
@@ -77,9 +77,9 @@ class LogisticRegression():
 
         for e in range(epoch):
             for i in range(m):
-                h = sigmoid(sum(dataset_mat[i]*weights))
-                error = self.label[i]-h
-                weights = weights+alpha*error*dataset_mat[i]
+                h = sigmoid(sum(dataset_mat[i] * weights))
+                error = self.label[i] - h
+                weights = weights + alpha * error * dataset_mat[i]
         weights = weights.tolist()
         self.weights = weights
         return weights
@@ -97,13 +97,13 @@ class LogisticRegression():
         return weights
 
     def predict(self, test_data):
-        # classfication function,input test data array and weights vector
+        # classification function,input test data array and weights vector
         if not self.weights:
             print('Model has not been trained!')
             return
         weights = np.array(self.weights)
-        # here * means np.multipy,not the np matrix's *
-        h = sigmoid(sum(test_data*weights))
+        # here * means np.multiply,not the np matrix's *
+        h = sigmoid(sum(test_data * weights))
         if h > 0.5:
             return 1
         else:
@@ -111,7 +111,7 @@ class LogisticRegression():
 
     def draw_decision_boundary(self):
         # draw decision boundary from trained model
-        # only for two binary classfication!
+        # only for two binary classification!
         if not self.weights:
             print('Model has not been trained!')
             return
@@ -133,9 +133,9 @@ class LogisticRegression():
         fig = plt.figure('decision boundary')
         plt.scatter(x1, y1, s=30, label='class1', c='red')
         plt.scatter(x2, y2, s=30, label='class2', c='green')
-        x = np.arange(min(min(x1), min(x2))-5, max(max(y1), max(y2))+5, 0.5)
+        x = np.arange(min(min(x1), min(x2)) - 5, max(max(y1), max(y2)) + 5, 0.5)
 
-        y = (-weights[0]-weights[1]*x)/weights[2]
+        y = (-weights[0] - weights[1] * x) / weights[2]
         plt.plot(x, y)
         plt.xlabel('x1')
         plt.ylabel('x2')
@@ -158,7 +158,7 @@ class LogisticRegression():
             y = self.predict(dataset[i])
             if y != label[i]:
                 wrong += 1
-        accuracy = (1-wrong/len(dataset))*100
+        accuracy = (1 - wrong / len(dataset)) * 100
         print('Accuracy is %.1f%%' % accuracy)
 
 

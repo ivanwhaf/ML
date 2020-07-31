@@ -8,7 +8,7 @@ def sigmoid(x):
 
 
 def deriv_sigmoid(x):
-    # derivative of simgoid function: f'(x) = f(x) * (1 - f(x))
+    # derivative of sigmoid function: f'(x) = f(x) * (1 - f(x))
     fx = sigmoid(x)
     return fx*(1-fx)
 
@@ -42,11 +42,11 @@ class Neuron:
         self.activation = activation
 
     def feedforward(self, inputs):
-        '''
+        """
         output=0
         for i in range(len(inputs)):
             output+=inputs[i]*weights[i]
-        '''
+        """
         output = np.dot(self.weights, inputs)+self.bias
         return self.activation(output)
 
@@ -95,7 +95,7 @@ class NeuralNetwork:
         output_o1 = self.o1.feedforward(output_h)
         output_o2 = self.o2.feedforward(output_h)
 
-        return (output_o1, output_o2)
+        return output_o1, output_o2
 
     def train(self, x_train, y_train, lr=0.01, epochs=100):
         # train loop times
